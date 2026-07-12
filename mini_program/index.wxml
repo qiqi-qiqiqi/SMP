@@ -1,0 +1,136 @@
+<view class="container">
+  <view class="header">
+    <view class="header-content">
+      <view class="header-icon">🏠</view>
+      <view class="header-text">
+        <text class="title">智慧门禁</text>
+        <text class="subtitle">设备监控与控制中心</text>
+      </view>
+    </view>
+    <view class="status-indicator {{mqttConnected ? 'connected' : restStatus === 'connecting' ? 'connecting' : 'offline'}}">
+      <text class="indicator-dot"></text>
+      <text class="indicator-text">{{mqttConnected ? '在线' : restStatus === 'connecting' ? '连接中' : '离线'}}</text>
+    </view>
+  </view>
+
+  <view class="data-section">
+    <view class="section-header">
+      <text class="section-icon">📊</text>
+      <text class="section-title">环境数据</text>
+      <text class="update-time">更新于 {{lastUpdate}}</text>
+    </view>
+    
+    <view class="data-grid">
+      <view class="data-card temp">
+        <view class="card-header">
+          <view class="card-icon">🌡️</view>
+          <text class="card-label">温度</text>
+        </view>
+        <view class="card-body">
+          <text class="data-value">{{temp}}</text>
+          <text class="data-unit">°C</text>
+        </view>
+      </view>
+      
+      <view class="data-card humi">
+        <view class="card-header">
+          <view class="card-icon">💧</view>
+          <text class="card-label">湿度</text>
+        </view>
+        <view class="card-body">
+          <text class="data-value">{{humi}}</text>
+          <text class="data-unit">%</text>
+        </view>
+      </view>
+      
+      <view class="data-card rain">
+        <view class="card-header">
+          <view class="card-icon">🌧️</view>
+          <text class="card-label">雨滴检测</text>
+        </view>
+        <view class="card-body">
+          <text class="data-value">{{rain === 0 ? '无' : rain === 1 ? '有' : rain}}</text>
+          <text class="data-unit"></text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="person-section">
+    <view class="section-header">
+      <text class="section-icon">👤</text>
+      <text class="section-title">门禁记录</text>
+    </view>
+    <view class="person-card">
+      <view class="person-icon">📋</view>
+      <view class="person-info">
+        <text class="person-label">最近开关门</text>
+        <text class="person-value">{{person || '暂无记录'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="control-section">
+    <view class="section-header">
+      <text class="section-icon">🎮</text>
+      <text class="section-title">设备控制</text>
+    </view>
+    
+    <view class="control-list">
+      <view class="control-item">
+        <view class="control-left">
+          <view class="control-icon-wrap relay">
+            <text class="control-icon">🔌</text>
+          </view>
+          <view class="control-info">
+            <text class="control-name">继电器</text>
+            <text class="control-desc">{{relay === 1 ? '当前状态：开启' : '当前状态：关闭'}}</text>
+          </view>
+        </view>
+        <switch class="control-switch" checked="{{relay === 1}}" bindchange="onRelayChange" color="#667eea" />
+      </view>
+
+      <view class="control-item">
+        <view class="control-left">
+          <view class="control-icon-wrap beep">
+            <text class="control-icon">🔔</text>
+          </view>
+          <view class="control-info">
+            <text class="control-name">蜂鸣器</text>
+            <text class="control-desc">{{beep === 1 ? '当前状态：开启' : '当前状态：关闭'}}</text>
+          </view>
+        </view>
+        <switch class="control-switch" checked="{{beep === 1}}" bindchange="onBeepChange" color="#f97316" />
+      </view>
+    </view>
+  </view>
+
+  <view class="action-section">
+    <button class="action-btn refresh" bindtap="refreshData" loading="{{loading}}">
+      <text class="action-icon">🔄</text>
+      <text>刷新数据</text>
+    </button>
+    <button class="action-btn auto {{timer ? 'active' : ''}}" bindtap="startAutoRefresh">
+      <text class="action-icon">🔃</text>
+      <text>{{timer ? '停止自动' : '自动刷新'}}</text>
+    </button>
+  </view>
+
+  <view class="log-section">
+    <view class="section-header">
+      <text class="section-icon">📝</text>
+      <text class="section-title">操作日志</text>
+      <button class="clear-btn" bindtap="clearLogs">清空</button>
+    </view>
+    <scroll-view class="log-list" scroll-y>
+      <view wx:for="{{logs}}" wx:key="index" class="log-item {{item.type}}">
+        <text class="log-time">{{item.time}}</text>
+        <text class="log-icon">{{item.type === 'success' ? '✓' : item.type === 'error' ? '✗' : '•'}}</text>
+        <text class="log-message">{{item.message}}</text>
+      </view>
+      <view wx:if="{{logs.length === 0}}" class="empty-log">
+        <text>暂无操作记录</text>
+      </view>
+    </scroll-view>
+  </view>
+</view>
