@@ -54,4 +54,4 @@
 
 - [人脸识别训练说明](facial_recognition/训练说明文档.md)
 - [上位机框架说明](upper_computer/框架说明文档.md)
-- [小程序说明](小程序/说明文档.md)
+- [小程序说明](mini_program/说明文档.md)
